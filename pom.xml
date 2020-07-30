@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>com.summer.parent</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <groupId>com.summer</groupId>
+    <artifactId>cluster-strategy</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>alicloud</module>
+        <module>Common-Interaction</module>
+    </modules>
+
+    <properties>
+        <springboot.version>2.3.1.RELEASE</springboot.version>
+        <common.module.version>1.0.1-SNAPSHOT</common.module.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.summer</groupId>
+                <artifactId>Log</artifactId>
+                <version>${common.module.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.summer</groupId>
+                <artifactId>Connector</artifactId>
+                <version>${common.module.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>4.4.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-ecs</artifactId>
+                <version>4.17.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.60</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-vpc</artifactId>
+                <version>3.0.9</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
