@@ -1,20 +1,18 @@
 package com.summer.interaction.service.cloud
 
-import com.summer.cloud.CloudConfig
-import com.summer.config.{DefaultConfig, InstanceRequestConfig}
+import java.util.concurrent.TimeUnit
+
+import com.summer.cloud.{CloudConfig, CloudException}
+import com.summer.config.InstanceRequestConfig
 import com.summer.connector.web.BaseResponse
 import com.summer.interaction.resouce.cloud.AliCloudResource
 import com.summer.request.ClusterRequest
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
 
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
 
-@Service
 class AliCloudService extends CloudService {
-
-  @Autowired
-  private val defaultConfig: DefaultConfig
 
   def addNode(instanceReq: InstanceRequestConfig, clusterId: Int)(req: ClusterRequest): BaseResponse[String] = {
     val cloudConfig = CloudConfig(
@@ -25,14 +23,25 @@ class AliCloudService extends CloudService {
     }
   }
 
-  def createCluster(config: InstanceRequestConfig)(req: ClusterRequest): BaseResponse[String] =  {
-    val clusterConfig = CloudConfig.ClusterConfig(req.size, req.clusterName, req.cloudType)
+  def createCluster(config: InstanceRequestConfig)(req: ClusterRequest) =  {
+    val clusterConfig = CloudConfig.ClusterConfig(Option.empty, req.size, req.clusterName, req.cloudType)
     val instanceConfig = new CloudConfig.InstanceConfig
-    AliCloudResource.createCluster(
+    val responseFuture = AliCloudResource.createCluster(
       CloudConfig(clusterConfig, instanceConfig))(defaultConfig)
       .map {
       // TODO fault tolerance
+        case Right(response) =>
+          val clusterProperties = ClusterProperties(response.getId, response.getClusterName)
+          new BaseResponse[String](response.code, response.message, gson.toJson(clusterProperties))
+        case Left(exception) =>
+          exception match {
+            case e: CloudException =>
+              new BaseResponse[String](e.code, "Create cluster failed", e.message)
+            case e =>
+              new BaseResponse[String](e.code, e.message, "")
+          }
     }
+    Await.result(responseFuture, Duration.create(5L, TimeUnit.SECONDS))
   }
 
   def destroyCluster(clusterId: Int): BaseResponse[String] = {
