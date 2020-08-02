@@ -1,25 +1,20 @@
 package com.summer.response;
 
+import com.summer.connector.web.BaseResponse;
 import com.summer.enums.StatusCode;
 
-public class InstanceResponse extends BaseResponse {
-
-    private StatusCode status;
+public class InstanceResponse extends BaseResponse<StatusCode> {
 
     public InstanceResponse(int code, String message, StatusCode status) {
-        super(code, message);
-        this.status = status;
+        super(code, message, status);
     }
 
     public StatusCode getStatus() {
-        return status;
+        return data;
     }
 
     public void setStatus(StatusCode status) {
-        this.status = status;
+        this.data = status;
     }
 
-    public InstanceResponse(int code, String message) {
-        super(code, message);
-    }
 }

@@ -4,33 +4,53 @@ import java.util
 
 import com.aliyuncs.DefaultAcsClient
 import com.aliyuncs.ecs.model.v20140526.RunInstancesRequest
+import com.aliyuncs.exceptions.{ClientException, ServerException}
 import com.aliyuncs.profile.DefaultProfile
 import com.summer.cloud.CloudConfig.{ClusterConfig, InstanceConfig}
-import com.summer.cloud.{CloudConfig, ClusterException}
+import com.summer.cloud.{CloudClientException, CloudConfig, CloudCreateFailure, CloudException, CloudServerException}
 import com.summer.config.{DefaultConfig, InstanceRequestConfig}
+import com.summer.connector.http.HttpCode
 import com.summer.response.ClusterResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 object AliCloudResource extends CloudResource {
 
-  private type either = Either[ClusterException, ClusterResponse]
-
-  def createCluster(cloudConfig: CloudConfig)(defaultConfig: DefaultConfig): Future[either] = {
+  override def createCluster(cloudConfig: CloudConfig)(defaultConfig: DefaultConfig): Future[either] = {
     // TODO validate parameters
     val clusterConfig = cloudConfig.clusterConfig.get
     val instanceConfig = cloudConfig.instanceConfig.get
-    Future[Either[ClusterException, ClusterResponse]] {
+    Future[Either[CloudException, ClusterResponse]] {
       createFromConfig(instanceConfig, clusterConfig)(defaultConfig) match {
         case Success(response) =>
+          // TODO instance response
+          val clusterResp = new ClusterResponse(HttpCode.SUCCESS.getCode, "Create cluster success", null)
+          Right(clusterResp)
+        case Failure(exception) =>
+          exception match {
+            case e: CloudException => Left(e)
+            case e: ServerException =>
+              val failure = new CloudServerException()
+              logger.error("Cloud Server has failure, errorCode: {}, errorMsg: {}", e.getErrCode, e.getErrMsg)
+              failure.message = e.getErrMsg
+              Left(failure)
+            case e: ClientException =>
+              val failure = new CloudClientException
+              failure.message = e.getErrMsg
+              Left(failure)
+            case e: Exception =>
+              val failure = new CloudCreateFailure
+              failure.message = e.getMessage
+              Left(failure)
+          }
       }
     }
   }
 
   def destroyCluster(clusterId: Int)(defaultConfig: DefaultConfig): Future[either] = {
-    Future[Either[ClusterException, ClusterResponse]] {
+    Future[Either[CloudException, ClusterResponse]] {
 
     }
   }

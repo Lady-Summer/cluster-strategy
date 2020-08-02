@@ -26,7 +26,7 @@ class AliCloudService extends CloudService {
   }
 
   def createCluster(config: InstanceRequestConfig)(req: ClusterRequest): BaseResponse[String] =  {
-    val clusterConfig = CloudConfig.ClusterConfig(req.size, req.clusterName, req.cloudType)
+    val clusterConfig = CloudConfig.ClusterConfig(Option.empty, req.size, req.clusterName, req.cloudType)
     val instanceConfig = new CloudConfig.InstanceConfig
     AliCloudResource.createCluster(
       CloudConfig(clusterConfig, instanceConfig))(defaultConfig)
