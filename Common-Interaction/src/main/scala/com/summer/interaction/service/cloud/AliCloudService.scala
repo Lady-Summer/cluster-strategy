@@ -14,7 +14,7 @@ import scala.concurrent.duration.Duration
 
 class AliCloudService extends CloudService {
 
-  def addNode(instanceReq: InstanceRequestConfig, clusterId: Int)(req: ClusterRequest): BaseResponse[String] = {
+  def addNode(instanceReq: InstanceRequestConfig, clusterId: String)(req: ClusterRequest): BaseResponse[String] = {
     val cloudConfig = CloudConfig(
       CloudConfig.ClusterConfig(
         Option(clusterId), req.size, req.clusterName, req.cloudType), new CloudConfig.InstanceConfig)
@@ -45,7 +45,7 @@ class AliCloudService extends CloudService {
     Await.result(responseFuture, Duration.create(5L, TimeUnit.SECONDS))
   }
 
-  def destroyCluster(clusterId: Int): BaseResponse[String] = {
+  def destroyCluster(clusterId: String): BaseResponse[String] = {
     AliCloudResource.destroyCluster(clusterId)(defaultConfig).map {
       //TODO fault tolerance
     }

@@ -13,11 +13,11 @@ trait CloudService extends StrictLogging {
 
   protected val gson = new Gson
 
-  protected case class ClusterProperties(clusterId: Int, clusterName: String)
+  protected case class ClusterProperties(clusterId: String, clusterName: String)
 
-  def addNode(instanceReq: InstanceRequestConfig, clusterId: Int)(req: ClusterRequest): BaseResponse[String]
+  def addNode(instanceReq: InstanceRequestConfig, clusterId: String)(req: ClusterRequest): BaseResponse[String]
 
   def createCluster(config: InstanceRequestConfig)(req: ClusterRequest): BaseResponse[String]
 
-  def destroyCluster(clusterId: Int): BaseResponse[String]
+  def destroyCluster(clusterId: String): BaseResponse[String]
 }

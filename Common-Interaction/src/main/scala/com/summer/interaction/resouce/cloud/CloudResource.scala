@@ -13,7 +13,7 @@ trait CloudResource extends StrictLogging {
 
   def createCluster(cloudConfig: CloudConfig)(defaultConfig: DefaultConfig): Future[either]
 
-  def destroyCluster(clusterId: Int)(defaultConfig: DefaultConfig)
+  def destroyCluster(clusterId: String)(defaultConfig: DefaultConfig): Unit
 
   def expandCluster(config: CloudConfig)(defaultConfig: DefaultConfig)
 

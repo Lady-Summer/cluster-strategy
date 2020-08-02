@@ -4,7 +4,7 @@ import com.summer.config.InstanceRequestConfig
 
 object CloudConfig {
 
-  case class ClusterConfig(clusterId: Option[Int], size: Int, name: String, cloudType: String)
+  case class ClusterConfig(clusterId: Option[String], size: Int, name: String, cloudType: String)
 
   class InstanceConfig extends InstanceRequestConfig
 

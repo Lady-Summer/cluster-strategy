@@ -26,6 +26,7 @@ object AliCloudResource extends CloudResource {
         case Success(response) =>
           // TODO instance response
           val clusterResp = new ClusterResponse(HttpCode.SUCCESS.getCode, "Create cluster success", null)
+          clusterResp.setId(response.getRequestId)
           Right(clusterResp)
         case Failure(exception) =>
           exception match {
@@ -48,7 +49,7 @@ object AliCloudResource extends CloudResource {
     }
   }
 
-  override def destroyCluster(clusterId: Int)(defaultConfig: DefaultConfig): Future[either] = {
+  override def destroyCluster(clusterId: String)(defaultConfig: DefaultConfig): Future[either] = {
     Future[Either[CloudException, ClusterResponse]] {
       // TODO write business logic after Ananka interface ready
 

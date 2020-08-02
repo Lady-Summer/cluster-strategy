@@ -7,8 +7,8 @@ public interface Trigger {
 
      BaseResponse<String> initiate(ClusterRequest request);
 
-     BaseResponse<String> add(ClusterRequest clusterRequest, int clusterId);
+     BaseResponse<String> add(ClusterRequest clusterRequest, String clusterId);
 
-     BaseResponse<String> destroy(int clusterId);
+     BaseResponse<String> destroy(String clusterId);
 
 }
