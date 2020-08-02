@@ -51,6 +51,7 @@ object AliCloudResource extends CloudResource {
   override def destroyCluster(clusterId: Int)(defaultConfig: DefaultConfig): Future[either] = {
     Future[Either[CloudException, ClusterResponse]] {
       // TODO write business logic after Ananka interface ready
+
     }
   }
 
