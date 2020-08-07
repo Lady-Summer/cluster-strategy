@@ -1,16 +1,15 @@
 package com.summer.interaction.service.cloud
 
-import java.util.concurrent.TimeUnit
-
-import com.summer.cloud.{CloudConfig, CloudException}
+import com.summer.cloud.{CloudClientException, CloudConfig, CloudDestroyFailure, CloudException, CloudServerException}
 import com.summer.config.InstanceRequestConfig
+import com.summer.connector.http.HttpCode
 import com.summer.connector.web.BaseResponse
 import com.summer.interaction.resouce.cloud.AliCloudResource
 import com.summer.request.ClusterRequest
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 
 class AliCloudService extends CloudService {
 
@@ -18,9 +17,12 @@ class AliCloudService extends CloudService {
     val cloudConfig = CloudConfig(
       CloudConfig.ClusterConfig(
         Option(clusterId), req.size, req.clusterName, req.cloudType), new CloudConfig.InstanceConfig)
-    AliCloudResource.expandCluster(cloudConfig)(defaultConfig).map {
+    val responseFuture = AliCloudResource.expandCluster(cloudConfig)(defaultConfig).map {
       // TODO fault tolerance
+      case Right(value) => new BaseResponse[String](HttpCode.CREATED.getCode,
+        "add node successfully", gson.toJson(value))
     }
+    Await.result(responseFuture, 5.seconds)
   }
 
   def createCluster(config: InstanceRequestConfig)(req: ClusterRequest) =  {
@@ -30,8 +32,8 @@ class AliCloudService extends CloudService {
     val responseFuture = AliCloudResource.createCluster(
       CloudConfig(clusterConfig, instanceConfig))(defaultConfig)
       .map {
-      // TODO fault tolerance
         case Right(response) =>
+          // TODO write cluster info in to config center
           val clusterProperties = ClusterProperties(response.getId, response.getClusterName)
           new BaseResponse[String](response.code, response.message, gson.toJson(clusterProperties))
         case Left(exception) =>
@@ -42,13 +44,27 @@ class AliCloudService extends CloudService {
               new BaseResponse[String](e.code, e.message, "")
           }
     }
-    Await.result(responseFuture, Duration.create(5L, TimeUnit.SECONDS))
+    Await.result(responseFuture, 5.seconds)
   }
 
   def destroyCluster(clusterId: String): BaseResponse[String] = {
-    AliCloudResource.destroyCluster(clusterId)(defaultConfig).map {
-      //TODO fault tolerance
+    val responseFuture = AliCloudResource.destroyCluster(clusterId)(defaultConfig).map {
+      case Right(value) => new BaseResponse[String](HttpCode.ACCEPT.getCode,
+        value.message, gson.toJson(value.data))
+      case Left(exception) =>
+        exception match {
+          case e: CloudServerException => new BaseResponse[String](HttpCode.SERVER_FORBIDON.getCode,
+            s"Fail to destroy cluster $clusterId", e.message)
+          case e: CloudClientException => new BaseResponse[String](HttpCode.BAD_REQUEST.getCode,
+            "Fail to destroy cluster $clusterId", e.message)
+          case e: CloudDestroyFailure =>
+            new BaseResponse[String](HttpCode.SERVER_INTERNAL_ERROR.getCode, "Internal Error", e.message)
+        }
+
     }
+
+    Await.result(responseFuture, 5.seconds)
+
   }
 
 }

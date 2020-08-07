@@ -2,11 +2,9 @@ package com.summer.interaction.trigger.cloud
 
 import com.summer.cloud.{InstanceChargeTypeNotDefinedException, InstanceException, InstanceTypeNotDefinedException, InternetChargeTypeNotDefinedException}
 import com.summer.config.InstanceRequestConfig
-import com.summer.instance.InstanceChargeTypeNotDefinedException
 import com.summer.log.StrictLogging
 
 import scala.util.Try
-
 
 
 object Validator extends StrictLogging {

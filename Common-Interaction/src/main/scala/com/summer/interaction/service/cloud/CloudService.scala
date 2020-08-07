@@ -9,7 +9,7 @@ import com.summer.request.ClusterRequest
 trait CloudService extends StrictLogging {
 
   // TODO initialize defaultConfig by calling Ananka interface
-  protected val defaultConfig: DefaultConfig
+  protected val defaultConfig: DefaultConfig = new DefaultConfig
 
   protected val gson = new Gson
 

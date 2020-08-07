@@ -5,7 +5,8 @@ public enum StatusCode {
     PENDING(0, "pending"),
     RUNNING(1, "running"),
     STOPPING(2, "stopping"),
-    STOPPED(-1, "stopped");
+    STOPPED(-1, "stopped"),
+    UNHEALTHY(3, "unhealthy");
 
     private int statusCode;
 

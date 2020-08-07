@@ -3,14 +3,15 @@ package com.summer.interaction.resouce.cloud
 import java.util
 
 import com.aliyuncs.DefaultAcsClient
-import com.aliyuncs.ecs.model.v20140526.RunInstancesRequest
+import com.aliyuncs.ecs.model.v20140526.{DeleteInstanceRequest, RunInstancesRequest}
 import com.aliyuncs.exceptions.{ClientException, ServerException}
 import com.aliyuncs.profile.DefaultProfile
 import com.summer.cloud.CloudConfig.{ClusterConfig, InstanceConfig}
-import com.summer.cloud.{CloudClientException, CloudConfig, CloudCreateFailure, CloudException, CloudServerException}
+import com.summer.cloud._
 import com.summer.config.{DefaultConfig, InstanceRequestConfig}
 import com.summer.connector.http.HttpCode
-import com.summer.response.ClusterResponse
+import com.summer.enums.StatusCode
+import com.summer.response.{ClusterResponse, InstanceResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,7 +26,9 @@ object AliCloudResource extends CloudResource {
       createFromConfig(instanceConfig, clusterConfig)(defaultConfig) match {
         case Success(response) =>
           // TODO instance response
-          val clusterResp = new ClusterResponse(HttpCode.SUCCESS.getCode, "Create cluster success", null)
+          val clusterResp = new ClusterResponse(HttpCode.SUCCESS.getCode, "Create cluster success",
+            new InstanceResponse(HttpCode.CREATED.getCode, "Start creating cluster", StatusCode.PENDING))
+          // TODO sync with PostgreSQL
           clusterResp.setId(response.getRequestId)
           Right(clusterResp)
         case Failure(exception) =>
@@ -50,14 +53,38 @@ object AliCloudResource extends CloudResource {
   }
 
   override def destroyCluster(clusterId: String)(defaultConfig: DefaultConfig): Future[either] = {
-    Future[Either[CloudException, ClusterResponse]] {
-      // TODO write business logic after Ananka interface ready
-
-    }
+    // TODO write business logic after Ananka interface ready
+    val deleteReq = new DeleteInstanceRequest()
+    deleteReq.setSysRegionId(defaultConfig.regionId)
+    deleteAll(deleteReq, clusterId)(defaultConfig)
   }
 
-  override def expandCluster(config: CloudConfig)(defaultConfig: DefaultConfig): Future[either] = {
-    // TODO write business logic after Ananka interface ready
+  private def deleteAll(deleteReq: DeleteInstanceRequest,
+                        clusterId: String)(defaultConfig: DefaultConfig) = {
+
+    Future {
+      val instanceIdSet = Set[String]()
+      val client = createAcsClient(defaultConfig)
+      instanceIdSet.foreach(id => {
+        deleteReq.setInstanceId(id)
+        client.getAcsResponse(deleteReq)
+      })
+      Right(new ClusterResponse(HttpCode.SUCCESS.getCode, s"Destroying cluster $clusterId",
+        new InstanceResponse(HttpCode.SUCCESS.getCode, "Start destroying instances", StatusCode.PENDING)))
+    }.recover {
+      case e: ServerException =>
+        val exception = new CloudServerException()
+        exception.code = Integer.valueOf(e.getErrCode)
+        exception.message = e.getErrMsg
+        Left(exception)
+      case e: ClientException =>
+        val exception = new CloudClientException
+        exception.code = Integer.valueOf(e.getErrCode)
+        exception.message = e.getErrMsg
+        Left(exception)
+      case Exception => Left(new CloudDestroyFailure)
+    }
+
   }
 
   private def createRunInstancesRequest(config: InstanceRequestConfig, defaultConfig: DefaultConfig) = {
@@ -106,4 +133,7 @@ object AliCloudResource extends CloudResource {
     new DefaultAcsClient(profile)
   }
 
+  override def expandCluster(config: CloudConfig)(defaultConfig: DefaultConfig): Future[either] = {
+    Future[either]
+  }
 }

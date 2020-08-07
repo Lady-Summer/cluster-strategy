@@ -54,10 +54,10 @@ class ClusterTrigger extends Trigger with StrictLogging {
 
   private def generateFaultInfo(exception: Throwable) = {
     exception match {
-      case e: Exception => new BaseResponse(HttpCode.SERVER_INTERNAL_ERROR.getCode,
-        HttpCode.SERVER_INTERNAL_ERROR.getMessage, e.getMessage)
       case e: InstanceException => new BaseResponse(HttpCode.BAD_REQUEST.getCode,
         HttpCode.BAD_REQUEST.getMessage, e.description)
+      case e: Exception => new BaseResponse(HttpCode.SERVER_INTERNAL_ERROR.getCode,
+        HttpCode.SERVER_INTERNAL_ERROR.getMessage, e.getMessage)
     }
   }
 }
