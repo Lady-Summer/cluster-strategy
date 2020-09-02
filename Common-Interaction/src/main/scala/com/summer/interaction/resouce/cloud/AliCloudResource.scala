@@ -28,12 +28,11 @@ object AliCloudResource extends CloudResource {
           // TODO instance response
           val clusterResp = new ClusterResponse(HttpCode.SUCCESS.getCode, "Create cluster success",
             new InstanceResponse(HttpCode.CREATED.getCode, "Start creating cluster", StatusCode.PENDING))
-          // TODO sync with PostgreSQL
+          // TODO write cluster info into PostgreSQL
           clusterResp.setId(response.getRequestId)
           Right(clusterResp)
         case Failure(exception) =>
           exception match {
-            case e: CloudException => Left(e)
             case e: ServerException =>
               val failure = new CloudServerException()
               logger.error("Cloud Server has failure, errorCode: {}, errorMsg: {}", e.getErrCode, e.getErrMsg)
@@ -82,7 +81,7 @@ object AliCloudResource extends CloudResource {
         exception.code = Integer.valueOf(e.getErrCode)
         exception.message = e.getErrMsg
         Left(exception)
-      case Exception => Left(new CloudDestroyFailure)
+      case _: Exception => Left(new CloudDestroyFailure)
     }
 
   }
@@ -132,8 +131,8 @@ object AliCloudResource extends CloudResource {
     val profile = DefaultProfile.getProfile(defaultConfig.regionId, defaultConfig.accessKey, defaultConfig.accessSecret)
     new DefaultAcsClient(profile)
   }
-
-  override def expandCluster(config: CloudConfig)(defaultConfig: DefaultConfig): Future[either] = {
-    Future[either]
-  }
+//
+//  override def expandCluster(config: CloudConfig)(defaultConfig: DefaultConfig): Future[either] = {
+//    Future[either]()
+//  }
 }

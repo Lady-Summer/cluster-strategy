@@ -12,18 +12,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 class AliCloudService extends CloudService {
-
-  def addNode(instanceReq: InstanceRequestConfig, clusterId: String)(req: ClusterRequest): BaseResponse[String] = {
-    val cloudConfig = CloudConfig(
-      CloudConfig.ClusterConfig(
-        Option(clusterId), req.size, req.clusterName, req.cloudType), new CloudConfig.InstanceConfig)
-    val responseFuture = AliCloudResource.expandCluster(cloudConfig)(defaultConfig).map {
-      // TODO fault tolerance
-      case Right(value) => new BaseResponse[String](HttpCode.CREATED.getCode,
-        "add node successfully", gson.toJson(value))
-    }
-    Await.result(responseFuture, 5.seconds)
-  }
+//
+//  def addNode(instanceReq: InstanceRequestConfig, clusterId: String)(req: ClusterRequest): BaseResponse[String] = {
+//    val cloudConfig = CloudConfig(
+//      CloudConfig.ClusterConfig(
+//        Option(clusterId), req.size, req.clusterName, req.cloudType), new CloudConfig.InstanceConfig)
+//    val responseFuture = AliCloudResource.expandCluster(cloudConfig)(defaultConfig).map {
+//      // TODO fault tolerance
+//      case Right(value) => new BaseResponse[String](HttpCode.CREATED.getCode,
+//        "add node successfully", gson.toJson(value))
+//    }
+//    Await.result(responseFuture, 5.seconds)
+//  }
 
   def createCluster(config: InstanceRequestConfig)(req: ClusterRequest) =  {
 

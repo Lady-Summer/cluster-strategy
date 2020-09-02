@@ -13,30 +13,30 @@ import scala.util.{Failure, Success}
 
 @RestController("/trigger/cluster")
 class ClusterTrigger extends Trigger with StrictLogging {
+//
+//  @PatchMapping(Array("/add"))
+//  override def add(request: ClusterRequest, clusterId: String): BaseResponse[String] = {
+//    Option(request.getData).fold {
+//      new BaseResponse(HttpCode.BAD_REQUEST.getCode,
+//        HttpCode.BAD_REQUEST.getMessage ,"The cluster request body should not be none")
+//    } {
+//      clusterReq =>
+//        Validator.validateInstanceConfig(clusterReq.getData) match {
+//          case Success(_) =>  CloudFactory(request.cloudType).addNode(clusterReq.getData, clusterId)(request)
+//          case Failure(exception) =>
+//            generateFaultInfo(exception)
+//        }
+//    }
+//
+//  }
 
-  @PatchMapping("/add")
-  override def add(request: ClusterRequest, clusterId: String): BaseResponse[String] = {
-    Option(request.getData).fold {
-      new BaseResponse(HttpCode.BAD_REQUEST.getCode,
-        HttpCode.BAD_REQUEST.getMessage ,"The cluster request body should not be none")
-    } {
-      clusterReq =>
-        Validator.validateInstanceConfig(clusterReq.getData) match {
-          case Success(_) =>  CloudFactory(request.cloudType).addNode(clusterReq.getData, clusterId)(request)
-          case Failure(exception) =>
-            generateFaultInfo(exception)
-        }
-    }
-
-  }
-
-  @DeleteMapping("/destroy")
+  @DeleteMapping(Array("/destroy"))
   override def destroy(clusterId: String): BaseResponse[String] = {
     logger.debug(s"Start destroying cluster, cluster id is: $clusterId")
     CloudFactory(CloudType.ALICLOUD.getDescription).destroyCluster(clusterId)
   }
 
-  @PostMapping("/initiate")
+  @PostMapping(Array("/initiate"))
   override def initiate(@RequestBody req: ClusterRequest) = {
 
     Option(req.getData).fold {

@@ -1,9 +1,12 @@
-import org.springframework.boot.{SpringApplication, SpringBootConfiguration}
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.context.annotation.ComponentScan
 
-@SpringBootConfiguration
-class CommonInteractionStarter {
+@SpringBootApplication
+@ComponentScan(Array("com.summer"))
+class CommonInteractionStarter
 
-  def main(args: Array[String]): Unit = {
-    SpringApplication.run(classOf[CommonInteractionStarter].getClasses, args)
-  }
+object CommonInteractionStarter {
+  def main(args: Array[String]): Unit = SpringApplication.run(classOf[CommonInteractionStarter], args:_*)
+
 }

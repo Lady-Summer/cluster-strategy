@@ -15,7 +15,7 @@ trait CloudService extends StrictLogging {
 
   protected case class ClusterProperties(clusterId: String, clusterName: String)
 
-  def addNode(instanceReq: InstanceRequestConfig, clusterId: String)(req: ClusterRequest): BaseResponse[String]
+//  def addNode(instanceReq: InstanceRequestConfig, clusterId: String)(req: ClusterRequest): BaseResponse[String]
 
   def createCluster(config: InstanceRequestConfig)(req: ClusterRequest): BaseResponse[String]
 

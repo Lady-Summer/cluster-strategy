@@ -5,9 +5,9 @@ import com.summer.interaction.service.cloud.AliCloudService
 
 object CloudFactory {
 
+  private val cloudTypeMapper = Map(CloudType.ALICLOUD.getDescription -> new AliCloudService)
+
   def apply(cloudType: String) = {
-    cloudType match {
-      case CloudType.ALICLOUD.getDescription => new AliCloudService
-    }
+    cloudTypeMapper(cloudType)
   }
 }
