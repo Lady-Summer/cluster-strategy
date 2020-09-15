@@ -8,5 +8,4 @@ class CommonInteractionStarter
 
 object CommonInteractionStarter {
   def main(args: Array[String]): Unit = SpringApplication.run(classOf[CommonInteractionStarter], args:_*)
-
 }

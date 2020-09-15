@@ -1,0 +1,5 @@
+datasource:
+  hostname: localhost
+  port: 3306
+  driverClassName: org.postgresql.Driver
+  database: devops

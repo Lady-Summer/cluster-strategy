@@ -1,0 +1,16 @@
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/enums/configType/InstanceNetworkType.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/response/CloudResponse.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/config/DefaultConfig.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/enums/configType/InstanceStatus.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/request/ClusterRequest.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/interfaces/Trigger.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/enums/configType/DiskType.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/enums/configType/InternetChargeType.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/enums/configType/InstanceChargeType.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/request/BaseRequest.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/enums/configType/CloudType.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/request/InstanceRequest.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/response/InstanceResponse.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/config/InstanceRequestConfig.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/enums/StatusCode.java
+/Users/songyi/summer/infrustructure/framework/cluster-strategy/Common-Interaction/src/main/java/com/summer/response/ClusterResponse.java
